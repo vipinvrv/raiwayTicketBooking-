@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<body>
+<style>
+.btn {
+  background-color: #4CAF50;
+  border: none;
+  position: relative;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  left: 45%;
+}
+
+.dropdown {
+  position: relative;
+  width: 200px;
+  margin: 0 auto;
+  padding: 10px;
+  background: #fff;
+  border-radius: 7px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 1px rgba(50, 50, 50, 0.1);
+  cursor: pointer;
+  outline: none;
+  font-weight: bold;
+  color: blue;
+}
+button {
+text-align:center;
+}
+p {
+    color: green;
+    font-weight: bold;
+
+}
+h1 {
+color: red;
+font-weight: bold;
+}
+.hiddenDiv{
+background-color: black;
+
+}
+h2{
+color: blue;
+font-size: 16px;
+}
+
+
+</style>
+<div id = "outerDiv">
+    <center>
+        <table border="1">
+            <tr>
+                <h2><th>Start Station Name:</th><td><select id = "ddlOrigin" class ="dropdown">
+                    <option selected="selected">Select</option></td>
+            </tr>
+            </h2>
+            <tr>
+                <h2><th>End Station Name:</th><td><select id = "ddlDestination" class="dropdown">
+                    <option selected="selected">Select</option>
+                </select></td>
+                </h2>
+            </tr>
+            <tr>
+                <h2><th>Class:</th><td><select id="ddlClass" class="dropdown">
+                    <option selected="selected">Select</option>
+                </select></td>
+                </h2>
+                </td>
+            </tr>
+        </table>
+        <h3>
+            <p id="fare"></p>
+            <h1 id = "error"></h1>
+        </h3>
+</div>
+</center>
+
+<center>
+    <div id="hiddenDiv"  >
+
+    </div>
+</center>
+
+
+<br>
+<br>
+
+<input type ="button" id = "btnCal" class= "btn" onclick="buttonHandeler()" value = "Calculate Fare"/>
+
+
+<script>
+var totalFare = 0;
+
+document.getElementById("hiddenDiv").innerHTML = "";
+var allStations = ["Delhi", "Kolkata", "Mumbai", "Chennai"];
+var sourceStationsId = document.getElementById("ddlOrigin").id;
+var destinationStationsId = document.getElementById("ddlDestination").id;
+var classes= ["General","SL","AC3","AC2","AC1"];
+var classesId= document.getElementById("ddlClass").id;
+populate(sourceStationsId, allStations);
+populate(destinationStationsId, allStations);
+populate(classesId,classes);
+
+function populate(selectId, stations){
+var ddl = document.getElementById(selectId);
+for(var i = 0 ; i < stations.length; i++)
+{
+	var ddlOption = document.createElement("option");
+	ddlOption.textContent = stations[i];
+	ddlOption.value = i+1;
+	ddl.appendChild(ddlOption);
+
+}
+}
+
+function buttonHandeler()
+{
+	var buttonText = document.getElementById("btnCal").value;
+	if(buttonText == "Calculate Fare")
+	{
+		 calculateFare();
+	}
+	if(buttonText == "Book Ticket")
+	{
+		bookTicket();
+	}
+}
+
+
+
+
+function calculateFare() {
+document.getElementById("fare").innerHTML = "";
+document.getElementById("error").innerHTML = "";
+var origin = document.getElementById("ddlOrigin");
+var destination = document.getElementById("ddlDestination");
+var selectedClass = document.getElementById("ddlClass");
+
+var classFare = (parseInt(selectedClass[selectedClass.selectedIndex].value)+1)*1000;
+var Fare = (parseInt(origin[origin.selectedIndex].value) - parseInt(destination[destination.selectedIndex].value))*2000;
+
+if(Fare < 0)
+{
+	Fare = Fare*(-1);
+}
+if(Fare != 0)
+{
+	totalFare = Fare + classFare;
+}
+if(!(isNaN(Fare) || isNaN(classFare)))
+{
+document.getElementById("fare").innerHTML ="Total Fare : Rs." + totalFare;
+document.getElementById("btnCal").value = "Book Ticket";
+}
+else
+{
+document.getElementById("error").innerHTML ="Select Source, Destination and Class";
+}
+}
+
+function bookTicket(){
+
+var origin = document.getElementById("ddlOrigin");
+var destination = document.getElementById("ddlDestination");
+var selectedClass = document.getElementById("ddlClass");
+
+var printDiv = document.getElementById("hiddenDiv");
+
+var source = document.createElement("P");
+//source.className = "sourceId";
+source.innerHTML = "Start Station Name : " + origin.options[origin.selectedIndex].text;
+printDiv.appendChild(source);
+
+
+var destpara = document.createElement("P");
+destpara.innerHTML = "End Station Name : " + destination.options[destination.selectedIndex].text;
+printDiv.appendChild(destpara);
+
+var farepara = document.createElement("P");
+farepara.innerHTML = "Fare : Rs." + totalFare;
+printDiv.appendChild(farepara);
+
+var statuspara = document.createElement("P");
+statuspara.innerHTML = "Status : Confirmed";
+printDiv.appendChild(statuspara);
+
+document.getElementById("outerDiv").innerHTML = "";
+document.getElementById("btnCal").value = "Print Ticket";
+
+}
+
+
+
+
+</script>
+
+
+
+</body>
+</html>
